@@ -12,9 +12,16 @@ The color of the number is changed depending on the value: the colder it is outs
 Yellow-red hues signify the positive temperature, and the negative temperature is represented by blue hues. 
 
 ## Compilation and launching
-
+```bash
+# change to the root directory of the repo
 $ cd .../logitech-keyboard-weather-backlight
+
+# generate the build system
 $ cmake -G "Visual Studio 16 2019" -A x64 -S . -B ./build
+
+# compile with msbuild
 $ msbuild ./build/logitech_keyboard_weather_backlight.sln
 
+# launch
 $ ./build/Debug/logitech_keyboard_weather_backlight.exe <api_key> <city_name>
+```
