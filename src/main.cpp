@@ -1,20 +1,47 @@
-#include <stdio.h>
+#include <iostream>
 #include <chrono>
 #include <thread>
-//#include <curl/curl.h>
-#include "LogitechLEDLib.h"
-#include "plot_numbers.h"
+#include <stdlib.h>
 
-int main(){
-    if (LogiLedInitWithName("Some name") == 1){
-        printf("Keyboard control started \n");
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        display_weather_data(0, 0, 0);
+#include "LogitechLEDLib/LogitechLEDLib.h"
+#include "logitech_keyboard_weather_backlight/plot_numbers.h"
+#include "logitech_keyboard_weather_backlight/weather_data.h"
+
+
+int main(int argc, char **argv){
+
+    // command line arguments checks 
+    if (argc < 2) {
+        std::cout << "No API token!" << std::endl;
+        exit(EXIT_FAILURE);
     }
-    else {
-        printf("The connection with Logitech Gaming Software is broken!\n");
-        return -1;
+    else if (argc < 3) {
+        std::cout << "No city name!" << std::endl;
+        exit(EXIT_FAILURE);
     }
-    // TODO: add curl support    
-    return 0;
+
+    const char* api_token = argv[1];
+    const char* city_name = argv[2];
+
+    std::cout << get_weather_data(api_token, city_name) << std::endl;
+
+    // if (LogiLedInitWithName("Weather") == 1){
+    //     std::cout << "Keyboard control started " << std::endl;
+    //     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+    //     LogiLedSetLightingForKeyWithKeyName(LogiLed::F6, 0, 125, 255);
+    //     //plot_digit(1, DecimalPlace::TENS, 255, 255, 255);
+    //     //plot_digit(2, DecimalPlace::ONES, 255, 255, 255);
+    //     // int temperature = get_weather_data(api_token, city_name);
+    //     // plot_number(temperature);
+    //     // display_weather_data(0, 0, 0);
+
+        
+    // }
+    // else {
+    //     printf("The connection with Logitech Gaming Software is broken!\n");
+    //     exit(EXIT_FAILURE);
+    // }
+    return 0; 
+    // exit(EXIT_SUCCESS);
 }

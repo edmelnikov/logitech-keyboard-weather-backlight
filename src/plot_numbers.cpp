@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <chrono>
 #include <thread>
-//#include <curl/curl.h>
 
-#include "LogitechLEDLib.h"
-#include "plot_numbers.h"
+#include "LogitechLEDLib/LogitechLEDLib.h"
+#include "logitech_keyboard_weather_backlight/plot_numbers.h"
 
 /* 
     The following function plots lines for a digit 
@@ -175,7 +174,6 @@ void plot_number(int num) {
         int first_digit = abs(num / 10);
         int second_digit = abs(num % 10);
         
-
         // the following code changes the color of digits depending on the temperature
         int red = 255; 
         int green = 255;
