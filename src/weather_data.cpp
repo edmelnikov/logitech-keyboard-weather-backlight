@@ -1,4 +1,4 @@
-// the following pragma's allow libcurl to link properly
+/* the following pragma's allow libcurl to link properly */
 #pragma comment(lib, "wldap32.lib")
 #pragma comment(lib, "crypt32.lib")
 #pragma comment(lib, "Ws2_32.lib")
@@ -15,17 +15,27 @@
 
 using json = nlohmann::json;
 
-static size_t write_func(char *data, size_t size, size_t nmemb, std::string *userdata) { // static makes the function visible only in this translation unit
+/* 
+    Handles the received data
+    (static makes the function visible only in this translation unit)
+*/
+static size_t write_func(char *data, size_t size, size_t nmemb, std::string *userdata) {
     userdata->append(data);
     return size*nmemb; // number of bytes
 }
 
+/*
+    JSON parser
+*/
 static int parse_json(std::string data_string) {
     json data_json = json::parse(data_string);
     // std::cout << data_json["main"]["temp"] << std::endl;
     return data_json["main"]["temp"];
 }
 
+/*
+    gets weather data using openweather api
+*/
 int get_weather_data(const char* api_token, const char* city_name) {
     CURL *curl;
     CURLcode curlResult;    
@@ -33,43 +43,43 @@ int get_weather_data(const char* api_token, const char* city_name) {
     char url[256]; // using char since libcurl accepts char url's
     strcpy_s(url, "https://api.openweathermap.org/data/2.5/weather?");
 
-    // url parameters:
-    // - city name   
+    /* url parameters: */
+    /* city name */   
     strcat_s(url, "q=");
     strcat_s(url, city_name);
     strcat_s(url, "&");
-    // - api key 
+    /* api key */ 
     strcat_s(url, "appid=");
     strcat_s(url, api_token);
     strcat_s(url, "&");
-    // - units
+    /* units */
     strcat_s(url, "units=metric");
 
     curl = curl_easy_init();
     if(curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url);
 
-        // Don't bother trying IPv6, which would increase DNS resolution time
+        /* Don't bother trying IPv6, which would increase DNS resolution time */
         curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
-        // time out after 10 seconds
+        /* time out after 10 seconds */
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
 
-        // allow redirects
+        /* allow redirects */
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
-        // where and how to write data 
+        /* where and how to write data */ 
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &curlBuffer);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_func);
 
-        // perform a blocking request to the server with options set above        
+        /* perform a blocking request to the server with options set above */        
         curlResult = curl_easy_perform(curl);
         
-        // extract information from a curl handle
+        /* extract information from a curl handle */
         long httpCode(0);
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
 
-        // end a libcurl easy handle
+        /* end a libcurl easy handle */
         curl_easy_cleanup(curl);
 
         if (httpCode == 200 && curlResult == CURLE_OK) {
@@ -78,8 +88,9 @@ int get_weather_data(const char* api_token, const char* city_name) {
             return temperature;
         } 
         else {
-            std::cout << "HTTP code " << httpCode << std::endl;
+            std::cout << "HTTP code " << httpCode << std::endl;            
             exit(EXIT_FAILURE);
         }      
     }
+    return -100;
 }

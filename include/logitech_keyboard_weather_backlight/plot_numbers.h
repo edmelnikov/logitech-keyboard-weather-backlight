@@ -13,7 +13,14 @@ typedef enum{
     HORIZONTAL_BOT
 }LinePosition;
 
-void plot_line(const DecimalPlace decimal_place, const LinePosition line_position, const int redPercentage, const int greenPercentage, const int bluePercentage);
-void plot_digit(int digit, DecimalPlace decimal_place, int redPercentage, int greenPercentage, int bluePercentage);
-void plot_number(int num);
-void display_weather_data(int bg_redPercentage, int bg_greenPercentage, int bg_bluePercentage);
+typedef enum {
+    POSITIVE,
+    NEGATIVE
+}Sign;
+
+void plot_line(DecimalPlace decimal_place, LinePosition line_position, int red, int green, int blue);
+void plot_digit(int digit, DecimalPlace decimal_place, int red, int green, int blue);
+void plot_temperature(int num);
+void plot_temperature(int num, int num_red, int num_green, int num_blue, int sign_red, int sign_green, int sign_blue);
+void plot_sign(Sign sign, int red, int green, int blue);
+void display_weather_data(int bg_red, int bg_green, int bg_blue);
